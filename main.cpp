@@ -1,14 +1,12 @@
 #include <iostream>
-#include <iomanip>
 #include <vector>
 #include <string>
+#include <map>
 #include "Entidades.hpp"
 
 using namespace std;
 
 int main(){
-    cout << fixed << setprecision(2);
-
     int qnt_corretor;
     cin >> qnt_corretor;
     vector<Corretor*> vetor_corretor;
@@ -24,7 +22,7 @@ int main(){
         if (Co != nullptr){vetor_corretor.push_back(Co);}
         else{
             cout << "> Erro ao inicializar corretor n°"<< i + 1 << endl;
-            for (int j = 0; j < qnt_corretor; ++j){delete vetor_corretor[j];}
+            for (int j = 0; j < qnt_corretor; j++){delete vetor_corretor[j];}
             return 0;
         }
     }
@@ -44,8 +42,8 @@ int main(){
         if (Cl != nullptr){vetor_cliente.push_back(Cl);}
         else{
             cout << "> Erro ao inicializar cliente n°"<< i + 1 << endl;
-            for (int j = 0; j < qnt_corretor; ++j){delete vetor_corretor[j];}
-            for (int j = 0; j < qnt_cliente; ++j){delete vetor_cliente[j];}
+            for (int j = 0; j < qnt_corretor; j++){delete vetor_corretor[j];}
+            for (int j = 0; j < qnt_cliente; j++){delete vetor_cliente[j];}
             return 0;
         }
     }
@@ -65,33 +63,44 @@ int main(){
         if (I != nullptr){vetor_imovel.push_back(I);}
         else{
             cout << "> Erro ao inicializar imovel n°"<< i + 1 << endl;
-            for (int j = 0; j < qnt_corretor; ++j){delete vetor_corretor[j];}
-            for (int j = 0; j < qnt_cliente; ++j){delete vetor_cliente[j];}
-            for (int j = 0; j < qnt_imovel; ++j){delete vetor_imovel[j];}
+            for (int j = 0; j < qnt_corretor; j++){delete vetor_corretor[j];}
+            for (int j = 0; j < qnt_cliente; j++){delete vetor_cliente[j];}
+            for (int j = 0; j < qnt_imovel; j++){delete vetor_imovel[j];}
             return 0;
         }
     }
-
+    
+    /*
     cout << "========= LISTA DE ENTIDADES =========\n";
-    for (int j = 0; j < qnt_corretor; ++j) {
-        cout << "\n> Corretor #" << (j + 1) << endl;
-        vetor_corretor[j]->exibirInformacoes();
-    }
+    for (int j = 0; j < qnt_corretor; j++){vetor_corretor[j]->exibirInformacoes();}
 
-    for (int j = 0; j < qnt_cliente; ++j) {
-        cout << "\n> Cliente #" << (j + 1) << endl;
-        vetor_cliente[j]->exibirInformacoes();
-    }
+    for (int j = 0; j < qnt_cliente; j++){vetor_cliente[j]->exibirInformacoes();}
 
-    for (int j = 0; j < qnt_imovel; ++j) {
-        cout << "\n> Imovel #" << (j + 1) << endl;
-        vetor_imovel[j]->exibirInformacoes();
+    for (int j = 0; j < qnt_imovel; j++) {vetor_imovel[j]->exibirInformacoes();}
+    */
+   
+    map<Corretor*, vector<Imovel*>, PessoaIDComparator> Agenda;
+    for (int j = 0; j < qnt_corretor; j++){
+        if (vetor_corretor[j]->getAvaliador()){
+            Agenda[vetor_corretor[j]];
+        }
+    }
+    if (Agenda.empty()){cout << "Nenhum avaliador disponível." << endl;}
+    else{
+        for (int j = 0; j < qnt_imovel; ){
+            for (auto it = Agenda.begin(); it != Agenda.end(); ++it){
+                vector<Imovel*>& Imoveis = it->second;
+                Imoveis.push_back(vetor_imovel[j]);
+                j++;
+            }
+        }
+        imprimirAgenda(Agenda);
     }
 
     // Liberação de memória
-    for (int j = 0; j < qnt_corretor; ++j){delete vetor_corretor[j];}
-    for (int j = 0; j < qnt_cliente; ++j){delete vetor_cliente[j];}
-    for (int j = 0; j < qnt_imovel; ++j){delete vetor_imovel[j];}
+    for (int j = 0; j < qnt_corretor; j++){delete vetor_corretor[j];}
+    for (int j = 0; j < qnt_cliente; j++){delete vetor_cliente[j];}
+    for (int j = 0; j < qnt_imovel; j++){delete vetor_imovel[j];}
 
     return 0;
 }
