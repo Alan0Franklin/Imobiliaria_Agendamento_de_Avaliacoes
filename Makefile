@@ -1,4 +1,4 @@
-EXEC = Imobiliaria_Agendamento_de_Avaliacoes.exe
+EXEC = imobiliaria.exe
 CXX = g++
 CXXFLAGS = -Wall -O0 -pedantic
 OBJS = main.o Entidades.o
