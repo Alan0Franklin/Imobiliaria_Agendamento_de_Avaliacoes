@@ -1,15 +1,18 @@
 #include <iostream>
+#include <iomanip>
 #include <limits>
+#include <cmath>
+#include <string>
 #include "Entidades.hpp"
 
 using namespace std;
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Pessoas>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-void Pessoas::setNome(string nome){this->nome = nome;}
-void Pessoas::setTelefone(string telefone){this->telefone = telefone;}
-string Pessoas::getNome(){return this->nome;}
-string Pessoas::getTelefone(){return this->telefone;}
-int Pessoas::getId(){return this->id;}
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Pessoa>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void Pessoa::setNome(string nome){this->nome = nome;}
+void Pessoa::setTelefone(string telefone){this->telefone = telefone;}
+string Pessoa::getNome(){return this->nome;}
+string Pessoa::getTelefone(){return this->telefone;}
+int Pessoa::getId() const {return this->id;}
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Corretor>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 int Corretor::nextId = 1;
@@ -78,6 +81,7 @@ Imovel::Imovel(string tipo, int proprietarioId, string endereco, double lat, dou
     this->lng = lng;
     this->preco = preco;
 }
+int Imovel::getId(){return this->id;}
 void Imovel::setTipo(string tipo){this->tipo = tipo;}
 void Imovel::setIdDoProprietario(int proprietarioId){this->proprietarioId = proprietarioId;}
 void Imovel::setEndereco(string endereco){this->endereco = endereco;}
@@ -96,7 +100,37 @@ void Imovel::exibirInformacoes(){
     cout << " Id do Proprietario: " << this->proprietarioId << endl;
     cout << "+ Latitude: " << this->lat << ";";
     cout << " Longitude " << this->lng << endl;
-    cout << "+ Preco: R$ " << this->preco << endl;
+    ostringstream oss;
+    oss << fixed << setprecision(2) << this->preco;
+    cout << "+ Preco: R$ " << oss.str() << endl;
+    cout << "+ Endereco: " << this->endereco << endl;
 }
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Funções>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// Função de Haversine, para obter a distância em km entre duas coordenadas
+double haversine(double lat1, double lng1, double lat2, double lng2) {
+    auto deg2rad = [](double d){return d * M_PI/180.0; };
+    double dlat = deg2rad(lat2 - lat1);
+    double dlng = deg2rad(lng2 - lng1);
+    double a = pow(sin(dlat/2), 2) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * pow(sin(dlng/2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return 6371.0 * c;
+}
+
+// Função para imprimir agenda no final
+void imprimirAgenda(map<Corretor*, vector<Imovel*>, PessoaIDComparator> &Agenda){
+    for (auto it = Agenda.begin(); it != Agenda.end(); it++){
+        Corretor* Corretor = it->first;
+        vector<Imovel*>& Imoveis = it->second;
+        cout << "Corretor " << Corretor->getId() << endl;
+        int qnt_imoveis = Imoveis.size();
+        for (int j = 0; j < qnt_imoveis; j++){
+            //cout << setfill('0') << setw(2) << hora << ":"  << setw(2) << minuto;
+            cout << " Imóvel " << Imoveis[j]->getId() << endl;
+        }
+        cout << "\n";
+    }
+}
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Estruturas>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+bool PessoaIDComparator::operator()(const Corretor* a, const Corretor* b) const {return a->getId() < b->getId();}
