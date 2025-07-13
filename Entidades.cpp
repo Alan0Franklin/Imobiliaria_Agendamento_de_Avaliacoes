@@ -3,6 +3,7 @@
 #include <limits>
 #include <cmath>
 #include <string>
+#include <bits/stdc++.h>
 #include "Entidades.hpp"
 
 using namespace std;
@@ -125,8 +126,14 @@ void imprimirAgenda(map<Corretor*, vector<Imovel*>, PessoaIDComparator> &Agenda)
         cout << "Corretor " << Corretor->getId() << endl;
         int qnt_imoveis = Imoveis.size();
         for (int j = 0; j < qnt_imoveis; j++){
+            double sog = (haversine(Corretor->getLatitude(), Corretor->getLongitude(), Imoveis[j]->getLatitude(), Imoveis[j]->getLongitude()) * 2);
+            int tempo = (int) sog;
+            string horus = to_string((tempo/60)+9);
+            if(horus.size() < 2){horus = "0" + horus;}
+            string minutus = to_string(tempo%60);
+            if(minutus.size() < 2){minutus = "0" + minutus;};
             //cout << setfill('0') << setw(2) << hora << ":"  << setw(2) << minuto;
-            cout << " Imóvel " << Imoveis[j]->getId() << endl;
+            cout << horus<<":"<<minutus << " Imóvel " << Imoveis[j]->getId() << endl;
         }
         cout << "\n";
     }
