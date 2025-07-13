@@ -3,7 +3,6 @@
 #include <limits>
 #include <cmath>
 #include <string>
-#include <bits/stdc++.h>
 #include "Entidades.hpp"
 
 using namespace std;
@@ -125,15 +124,17 @@ void imprimirAgenda(map<Corretor*, vector<Imovel*>, PessoaIDComparator> &Agenda)
         vector<Imovel*>& Imoveis = it->second;
         cout << "Corretor " << Corretor->getId() << endl;
         int qnt_imoveis = Imoveis.size();
+        int tempo_atual = 9 * 60;
+        double lat_local_atual = Corretor->getLatitude(), lon_local_atual = Corretor->getLongitude();
         for (int j = 0; j < qnt_imoveis; j++){
-            double sog = (haversine(Corretor->getLatitude(), Corretor->getLongitude(), Imoveis[j]->getLatitude(), Imoveis[j]->getLongitude()) * 2);
-            int tempo = (int) sog;
-            string horus = to_string(((tempo/60)+9)%24);
-            if(horus.size() < 2){horus = "0" + horus;}
-            string minutus = to_string(tempo%60);
-            if(minutus.size() < 2){minutus = "0" + minutus;};
-            //cout << setfill('0') << setw(2) << hora << ":"  << setw(2) << minuto;
-            cout << horus<<":"<<minutus << " Imóvel " << Imoveis[j]->getId() << endl;
+            double lat_prox_imovel = Imoveis[j]->getLatitude(), lon_prox_imovel = Imoveis[j]->getLongitude();
+            double hold = haversine(lat_local_atual, lon_local_atual, lat_prox_imovel, lon_prox_imovel) * 2;
+            int horario = (int) hold + tempo_atual;
+            int hora = horario / 60 % 24, minuto = horario % 60;
+            cout << setfill('0') << setw(2) << hora << ":"  << setw(2) << minuto << " Imóvel " << Imoveis[j]->getId() << endl;
+            tempo_atual = 60 + horario;
+            lat_local_atual = lat_prox_imovel;
+            lon_local_atual = lon_prox_imovel;
         }
         cout << "\n";
     }
