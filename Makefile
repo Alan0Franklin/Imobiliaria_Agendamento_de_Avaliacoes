@@ -1,17 +1,16 @@
 EXEC = imobiliaria.exe
 CXX = g++
-CXXFLAGS = -Wall -O0 -pedantic
-OBJS = main.o Entidades.o
+CXXFLAGS = -std=c++11 -Wall -O0 -pedantic
+SRCS = main.cpp pessoa.cpp cliente.cpp corretor.cpp imovel.cpp util.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CXX) -o $(EXEC) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-main.o: main.cpp Entidades.hpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
-
-Entidades.o: Entidades.cpp Entidades.hpp
-	$(CXX) $(CXXFLAGS) -c Entidades.cpp
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
-	@if exist *.o del /Q *.o
-	@if exist $(EXEC) del /Q $(EXEC)
+	rm -f $(OBJS) $(EXEC)
