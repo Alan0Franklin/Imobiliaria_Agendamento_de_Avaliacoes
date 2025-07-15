@@ -46,7 +46,7 @@ Imobiliaria_Agendamento_de_Avaliacoes/
 
 ## 2. Descrição das Classes <a name="2-descricao_das_classes"></a>
 
-### ➕ class Pessoa
+### a) class Pessoa
 Classe abstrata para compartilhar atributos em comum de entidades representadas por indivíduos.
 - `id`: Número inteiro que representa o ID da pessoa (dependendo da função da pessoa que vai herdar essa classe na imobiliária).
 - `nome`: String correspondente ao nome da pessoa.
@@ -77,7 +77,7 @@ Método virtual puro para exibir as informações da pessoa, obrigando as classe
 
 ---
 
-### ➕ class Corretor : public Pessoa
+### b) class Corretor : public Pessoa
 Classe derivada de `Pessoa` que representa um corretor da imobiliária.
 - `nextId`: Número inteiro que se mantém estático para todos os objetos da classe `Corretor`, é o que permite o programa gerar `id`s sequenciais para cada `Corretor`, começando em 1.
 - `avaliador`: Booleana que indica se aquele é um corretor-avaliador. Com `true` indicando que sim, que aquele corretor é um avaliador, e `false` indicando que não, que aquele corretor não é um avaliador.
@@ -99,11 +99,11 @@ Construtor para criar um objeto `Corretor` que autoincrementa o `id` com ajuda d
 Método para atribuir se tal corretor é um avaliador ou não.
 - `avaliador`: Inteiro o qual define se o corretor como avaliador ou não. Com `1` indicando que sim, que aquele corretor é um avaliador, e `0` indicando que não.
 
-#### + void setLatitude(double lat)
+#### + void setLatitude(double lat) const
 Método para atribuir a latitude (`lat`) onde o corretor mora.
 - `lat`: Número flutante o qual deseja-se definir como a latitude onde o corretor mora.
 
-#### + void setLongitude(double lng)
+#### + void setLongitude(double lng) const
 Método para atribuir a longitude (`lng`) onde o corretor mora.
 - `lng`: Número flutante o qual deseja-se definir como a longitude onde o corretor mora.
 
@@ -121,7 +121,7 @@ Método para exibir as informações do corretor, no caso seu `id`, `nome`, `tel
 
 ---
 
-### ➕ class Cliente : public Pessoa
+### c) class Cliente : public Pessoa
 Classe derivada de `Pessoa` que representa um cliente da imobiliária.
 - `nextId`: Número inteiro que se mantém estático para todos os objetos da classe `Cliente`, é o que permite o programa gerar `id`s sequenciais para cada `Cliente`, começando em 1.
 
@@ -138,7 +138,7 @@ Método para exibir as informações do cliente, no caso seu `id`, `nome`, `tele
 
 ---
 
-### ➕ class Imovel
+### d) class Imovel
 Classe que representa um imóvel da imobiliária.
 - `nextId`: Número inteiro que se mantém estático para todos os objetos da classe `Imovel`, é o que permite o programa gerar `id`s sequenciais para cada `Imovel`, começando em 1.
 - `id`: Número inteiro que representa o ID do imóvel (na imobiliária).
@@ -216,21 +216,27 @@ Método para exibir as informações do corretor, no caso seu `id`, `tipo`, `pro
 ### + struct PessoaIDComparator 
 Estrutura que define um critério de ordenação entre dois corretores com base em seus respectivos `id`s. Essa lógica permite utilizar mapas (`std::map`) em que os corretores são organizados em ordem crescente de `id`, facilitando buscas e inserções ordenadas.
 
-#### + bool operator()(const Corretor* a, const Corretor* b) const
-Método que verifica se o `id` do corretor `a` é menor que o `id` do corretor `b`. Retorna 1 caso a condição seja verdadeira, e 0 caso contrário.
+#### + bool operator()(const std::shared_ptr<Corretor> a, const std::shared_ptr<Corretor> b) const
+Método que verifica se o `id` do corretor no ponteiro `a` é menor que o `id` do corretor no ponteiro `b`. Retorna 1 caso a condição seja verdadeira, e 0 caso contrário.
 - `a`: Ponteiro para um tal `Corretor` a.
 - `b`: Ponteiro para um tal `Corretor` b.
 
 ### + double haversine(double lat1, double lng1, double lat2, double lng2)
-Função haversine, usada para calcular a distância entre das coordenadas na superfície do globo. Recebendo como parâmetros as latitudes (`lat`) e as longitudes (`lng`) de cada um desses pontos e retornando a distância (em km).
+Função haversine, usada para calcular a distância entre duas coordenadas na superfície do globo. Recebendo como parâmetros as latitudes (`lat`) e as longitudes (`lng`) de cada um desses pontos e retornando a distância (em km).
 - `lat1`: Número flutante que representa a latitude de um ponto 1.
 - `lng1`: Número flutante que representa a longitude de um ponto 1.
 - `lat2`: Número flutante que representa a latitude de um ponto 2.
 - `lng1`: Número flutante que representa a longitude de um ponto 2.
 
-### + void imprimirAgenda(std::map<Corretor*, std::vector<Imovel*>, PessoaIDComparator>& Agenda)
+### + void imprimirAgenda(std::map<std::shared_ptr<Corretor>, std::vector<std::shared_ptr<Imovel>>, PessoaIDComparator>& Agenda)
 Função responsável por gerar a agenda de visitas dos avaliadores, a partir de um mapa chamado `Agenda`, no qual as chaves são ponteiros para corretores-avaliadores e os valores são vetores contendo os imóveis que cada avaliador deve visitar. Para cada avaliador, a simulação começa às **09:00**, considerando sua localização inicial. A cada passo, é selecionado o imóvel **ainda não visitado** mais próximo da posição atual (seja a localização inicial ou o último imóvel visitado). O tempo de deslocamento até o imóvel é calculado com base na fórmula `distância × 2 minutos` e adicionado ao horário atual. Em seguida, a visita é agendada para esse horário, e **60 minutos** são somados ao relógio para representar a duração da avaliação. Esse processo se repete até que todos os imóveis atribuídos ao avaliador tenham sido visitados e agendados.
 - `Agenda`: Um mapa que contém chaves como ponteiros para corretores-avaliadores e que armazena valores como vetores de imóveis que p tal dado corretor-avaliador (apontada pelo ponteiro da chave) deve avaliar.
+
+### + std::list<std::shared_ptr<Imovel>>::iterator imovelmaisproximo(double lat, double lng, std::list<std::shared_ptr<Imovel>>& lista_imoveis)
+Função que retorna o iterador do ponteiro do imóvel de `lista_imoveis` mais próximo da posição atual de um corretor-avaliador (seja a localização inicial ou o último imóvel visitado), com latitude `lat` e longitude `lng`, entre todos os imóveis nos ponteiros de `lista_imoveis`. Ela compara a distância de todos os imóveis de uma `lista_imoveis` em relação à latitude `lat` e longitude `lng`, retornando o que tiver menor distância.
+- `lat`: Número flutante que representa a latitude da posição atual de um corretor-avaliador.
+- `lng`: Número flutante que representa a longitude da posição atual de um corretor-avaliador.
+- `lista_imoveis`: Uma lista de ponteiros de imóveis que um dado corretor deve visitar.
 
 ---
 
