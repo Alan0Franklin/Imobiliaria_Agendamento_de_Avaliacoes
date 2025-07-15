@@ -9,9 +9,14 @@ protected:
     std::string nome;
     std::string telefone;
 public:
+    // Destrutor de Pessoa:
     virtual ~Pessoa() = default;
+    
+    // Atribuem valores aos atributos da Pessoa:
     void setNome(std::string nome);
     void setTelefone(std::string telefone);
+
+    // Obtem os atributos da Pessoa:
     std::string getNome();
     std::string getTelefone();
     int getId() const;
