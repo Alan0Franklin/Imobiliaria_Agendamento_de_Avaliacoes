@@ -14,3 +14,7 @@ $(EXEC): $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(EXEC)
+
+clean-windows:
+	@if exist *.o del /Q *.o
+	@if exist $(EXEC) del /Q $(EXEC)
