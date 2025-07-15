@@ -18,18 +18,18 @@ Imovel::Imovel(string tipo, int proprietarioId, string endereco, double lat, dou
     this->preco = preco;
 }
 
-int Imovel::getId() {return this->id;}
 void Imovel::setTipo(string tipo) {this->tipo = tipo;}
 void Imovel::setIdDoProprietario(int proprietarioId) {this->proprietarioId = proprietarioId;}
 void Imovel::setEndereco(string endereco) {this->endereco = endereco;}
 void Imovel::setLatitude(double lat) {this->lat = lat;}
 void Imovel::setLongitude(double lng) {this->lng = lng;}
 void Imovel::setPreco(double preco) {this->preco = preco;}
+int Imovel::getId() {return this->id;}
 string Imovel::getTipo() {return this->tipo;}
 int Imovel::getIdDoProprietario() {return this->proprietarioId;}
 string Imovel::getEndereco() {return this->endereco;}
-double Imovel::getLatitude() {return this->lat;}
-double Imovel::getLongitude() {return this->lng;}
+double Imovel::getLatitude() const {return this->lat;}
+double Imovel::getLongitude() const {return this->lng;}
 double Imovel::getPreco() {return this->preco;}
 
 void Imovel::exibirInformacoes() {
