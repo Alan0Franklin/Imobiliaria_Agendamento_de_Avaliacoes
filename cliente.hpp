@@ -8,8 +8,11 @@ class Cliente : public Pessoa {
 private:
     static int nextId;
 public:
+    // Contrutores de Cliente:
     Cliente();
     Cliente(std::string nome, std::string telefone);
+    
+    // Obtem os atributos do Cliente:
     void exibirInformacoes();
 };
 
