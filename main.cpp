@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <string>
 #include <map>
@@ -14,7 +15,7 @@ int main() {
     
     int qnt_corretor;
     cin >> qnt_corretor;
-    vector<Corretor*> vetor_corretor;
+    vector<shared_ptr<Corretor>> vetor_corretor;
     vetor_corretor.reserve(qnt_corretor);
 
     for (int i = 0; i < qnt_corretor; i++) {
@@ -23,18 +24,17 @@ int main() {
         cin >> telefone >> avaliador >> lat >> lng;
         string nome;
         getline(cin >> ws, nome); // lê o restante da linha como nome completo
-        Corretor* Co = new Corretor(nome, telefone, avaliador, lat, lng);
-        if (Co != nullptr) {vetor_corretor.push_back(Co);} 
+        shared_ptr<Corretor> Co = make_shared<Corretor>(nome, telefone, avaliador, lat, lng);
+        if (Co) {vetor_corretor.push_back(Co);} 
         else {
             cerr << "> Erro ao inicializar corretor n°" << i + 1 << endl;
-            for (auto c : vetor_corretor) delete c;
             return 1;
         }
     }
 
     int qnt_cliente;
     cin >> qnt_cliente;
-    vector<Cliente*> vetor_cliente;
+    vector<shared_ptr<Cliente>> vetor_cliente;
     vetor_cliente.reserve(qnt_cliente);
 
     for (int i = 0; i < qnt_cliente; i++) {
@@ -43,19 +43,17 @@ int main() {
         cin >> telefone;
         string nome;
         getline(cin >> ws, nome); // lê o restante da linha como nome completo
-        Cliente* Cl = new Cliente(nome, telefone);
-        if (Cl != nullptr) {vetor_cliente.push_back(Cl);}
+        shared_ptr<Cliente> Cl = make_shared<Cliente>(nome, telefone);
+        if (Cl) {vetor_cliente.push_back(Cl);}
         else {
             cerr << "> Erro ao inicializar cliente n°" << i + 1 << endl;
-            for (auto c : vetor_corretor) delete c;
-            for (auto cl : vetor_cliente) delete cl;
             return 1;
         }
     }
 
     int qnt_imovel;
     cin >> qnt_imovel;
-    vector<Imovel*> vetor_imovel;
+    vector<shared_ptr<Imovel>> vetor_imovel;
     vetor_imovel.reserve(qnt_imovel);
 
     for (int i = 0; i < qnt_imovel; i++) {
@@ -64,13 +62,10 @@ int main() {
         cin >> tipo >> proprietarioId >> lat >> lng >> preco;
         string endereco;
         getline(cin >> ws, endereco); // lê o restante da linha como endereço completo
-        Imovel* I = new Imovel(tipo, proprietarioId, endereco, lat, lng, preco);
-        if (I != nullptr) {vetor_imovel.push_back(I);}
+        shared_ptr<Imovel> I = make_shared<Imovel>(tipo, proprietarioId, endereco, lat, lng, preco);
+        if (I) {vetor_imovel.push_back(I);}
         else {
             cerr << "> Erro ao inicializar imóvel n°" << i + 1 << endl;
-            for (auto c : vetor_corretor) delete c;
-            for (auto cl : vetor_cliente) delete cl;
-            for (auto im : vetor_imovel) delete im;
             return 1;
         }
     }
@@ -84,8 +79,8 @@ int main() {
     for (int j = 0; j < qnt_imovel; j++) {vetor_imovel[j]->exibirInformacoes();}
     */
 
-    map<Corretor*, vector<Imovel*>, PessoaIDComparator> Agenda;
-    for (auto* corretor : vetor_corretor) {if (corretor->getAvaliador()) {Agenda[corretor] = vector<Imovel*>{};}}
+    map<shared_ptr<Corretor>, vector<shared_ptr<Imovel>>, PessoaIDComparator> Agenda;
+    for (auto& corretor : vetor_corretor) {if (corretor->getAvaliador()) {Agenda[corretor] = vector<shared_ptr<Imovel>>{};}}
 
     if (Agenda.empty()) {cout << "Nenhum avaliador disponível." << endl;}
     else {
@@ -98,11 +93,6 @@ int main() {
         }
         imprimirAgenda(Agenda);
     }
-
-    // Liberação de memória
-    for (auto c : vetor_corretor) delete c;
-    for (auto cl : vetor_cliente) delete cl;
-    for (auto im : vetor_imovel) delete im;
 
     return 0;
 }
