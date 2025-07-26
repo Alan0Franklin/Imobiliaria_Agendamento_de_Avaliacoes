@@ -243,12 +243,10 @@ Função que retorna o iterador do ponteiro do imóvel de `lista_imoveis` mais p
 ## 4. Como Compilar e Executar <a name="4-como_compilar_e_executar"></a>
 Para compilar os arquivos, use o comando `make` em um terminal no diretório/pasta que o `Makefile` estiver. Este comando automatizará a compilação e gerará um executável chamado `imobiliaria`.
 
-Esse programa recebe lê o conteúdo do `cout` redirecionado de um arquivo `entrada.txt` com o `<`, como se fosse digitado pelo terminal, e será imprimido `cin` redirecionado para um arquivo `saida.txt` com o `>`, como se fosse impresso no terminal. Para isso use o seguinte comando a depender do seu terminal:
+Esse programa lê o conteúdo do `cout` redirecionado de um arquivo `entrada.txt` com o `<`, como se fosse digitado pelo terminal, e será impresso (`cin`) de forma redirecionada para um arquivo `saida.txt` com o `>`, como se fosse impresso no terminal. Para isso use o seguinte comando a depender do seu terminal:
 
 *   **Windows (Command Prompt):** `imobiliaria.exe < entrada.txt > saida.txt`
 *   **Linux/macOS (Terminal):** `./imobiliaria < entrada.txt > saida.txt`
-
-
 
 ### Formato de Entrada Padrão
 O programa lê **exatamente** neste formato:
